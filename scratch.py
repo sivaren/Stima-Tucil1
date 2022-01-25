@@ -84,7 +84,13 @@ while(not found) and (key_count < len(keys_arr)):
                         finding_idx = 0
                         while((finding_idx < len(curr_key)) and (curr_key[finding_idx] == puzzle[row-finding_idx][col])):
                             key_idx = [row-finding_idx, col]
+                            # print(key_idx[0])
+                            # print(key_idx[1])
                             key_constructors.append(key_idx)
+                            # for i in range(len(key_constructors)):
+                            #     for j in range(len(key_constructors[i])):
+                            #         print(key_constructors[i][j], end = "")
+                            #     print()
 
                             finding_idx += 1
                         
@@ -92,6 +98,7 @@ while(not found) and (key_count < len(keys_arr)):
                             key_stat[key_count] = 1
                             found_idx = [row, col]
                             all_key_constructors.append(key_constructors)
+                            # print(all_key_constructors[0][0][0])
                         else:
                             key_constructors.clear() 
 
@@ -233,8 +240,13 @@ print(f"Hasil ditemukan: {found}")
 print("===")
 # print(f"Penyusun kata: {key_constructors}")
 output_program(puzzle, all_key_constructors, keys_arr)
+# print(all_key_constructors[6][2][1])
 print("===")
-
+# for i in range(len(all_key_constructors)):
+#     for j in range(len(all_key_constructors[i])):
+#         for k in range(len(all_key_constructors[i][j])):
+#             print(all_key_constructors[i][j][k], end="")
+#     print()
 # print_keyword(puzzle, key_constructors)
 # print("===")
 
