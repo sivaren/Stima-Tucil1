@@ -3,6 +3,17 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+    static Scanner in = new Scanner(System.in);
+
+    // Method untuk menampilkan layar awal
+    public static void displayMenu() {
+        System.out.println("==========================================");
+        System.out.println("      (^///^) SELAMAT DATANG (^///^)      ");
+        System.out.println("==========================================");
+        System.out.println("Masukkan nama file (xxx.txt): ");
+        System.out.print("> ");
+    }
+
     // Method membuka file dan mengembalikan matrix dari puzzle
     public static char[][] readPuzzle(String file) throws IOException {
         char[][] puzzle = null;
@@ -24,8 +35,12 @@ public class Main {
 
                 puzzle = new char[rows][cols];
                 for(int i = 0; i < rows; i++) {
-                    String str = puzzle_row[i].replaceAll("\s", "");     
-                    puzzle[i] = str.toCharArray();
+                    String str = puzzle_row[i].replaceAll("\s", ""); 
+                    char[] array = str.toCharArray();
+                    for(int j = 0; j < cols; j++){
+                        puzzle[i][j] = array[j];
+                    }    
+                    // puzzle[i] = str.toCharArray();
                 }
             }
             return puzzle;
@@ -73,27 +88,11 @@ public class Main {
         }
     }
     
-    // Method untuk menambahkan elemen dari array 2D
-    public static int[][] appendArr_2d(int[][] array, int[] el) {
-        int[][] newArray = Arrays.copyOf(array, array.length + 1);
-        newArray[array.length] = el;
-
-        return newArray;
-    }
-    
     // Method untuk mengosongkan array 2D
     public static int[][] clearArr_2d(int[][] array) {
         int[][] newArr = new int[0][0];    
 
         return newArr;
-    }
-
-    // Method untuk menambahkan elemen dari array 3D
-    public static int[][][] appendArr_3d(int[][][] array, int[][] el) {
-        int[][][] newArray = Arrays.copyOf(array, array.length + 1);
-        newArray[array.length] = el;
-        
-        return newArray;
     }
     
     // Method untuk mengecek keberadaan suatu titik {row, col} pada array 2D keys_constructors
@@ -140,7 +139,7 @@ public class Main {
         }
     }
 
-    public static void print_key_found(char[][] puzzle, String key_word, int[][] key_const) {
+    public static void print_key_found(char[][] puzzle, String key_word, int key_comp, int[][] key_const) {
         System.out.println(key_word);
         for (int i = 0; i < puzzle.length; i++) {
             for (int j = 0; j < puzzle[0].length; j++) {
@@ -154,16 +153,23 @@ public class Main {
             }
             System.out.println();
         }
+        System.out.println("Total perbandingan huruf: " + key_comp);
         System.out.println();
     }
 
     public static void main(String[] args) throws IOException {
-        char[][] puzzle = readPuzzle("test/Small1.txt");
+        String inputFile;
+        displayMenu();
+        inputFile = in.nextLine();
+        System.out.println("==========================================");
+        
+        char[][] puzzle = readPuzzle("test/" + inputFile);
         int puzzle_rows = puzzle.length;
         int puzzle_cols = puzzle[0].length;
-
-        String[] keys_arr = readKeywords("test/Small1.txt");
+        
+        String[] keys_arr = readKeywords("test/" + inputFile);
         int[] keys_stat = new int[keys_arr.length];
+        int[] key_comp = new int[keys_arr.length];
 
         // int[][][] all_keys_constructors = {};
 
@@ -202,9 +208,8 @@ public class Main {
                 col = 0;
                 while(col < puzzle_cols && keys_stat[key_count] == 0) {
                     dir_state = 0;
-                    int[][] key_const = new int[0][0];
-
                     while(dir_state < 8 && keys_stat[key_count] == 0) {
+                        int[][] key_const = new int[curr_key.length()][2];
                         if (dir_state == 0) {
                             boundary_length = row + 1;
 
@@ -212,13 +217,16 @@ public class Main {
                                 finding_idx = 0;
 
                                 while ((finding_idx < curr_key.length()) && (getCharFromString(curr_key, finding_idx) == puzzle[row-finding_idx][col])) {
-                                    int[] key_idx = {row-finding_idx, col};
-                                    key_const = appendArr_2d(key_const, key_idx);
+                                    int[] key_idx = new int[2];
+                                    key_idx[0] = row-finding_idx;
+                                    key_idx[1] = col;
+                                    key_const[finding_idx] = key_idx;
+                                    key_comp[key_count]++;
                                     finding_idx++;
                                 }
                                 if (finding_idx == curr_key.length()) {
                                     keys_stat[key_count] = 1;
-                                    print_key_found(puzzle, curr_key, key_const);
+                                    print_key_found(puzzle, curr_key, key_comp[key_count], key_const);
                                     key_const = clearArr_2d(key_const);
                                 } else {
                                     key_const = clearArr_2d(key_const);
@@ -236,13 +244,16 @@ public class Main {
                                 finding_idx = 0;
 
                                 while ((finding_idx < curr_key.length()) && (getCharFromString(curr_key, finding_idx) == puzzle[row-finding_idx][col+finding_idx])) {
-                                    int[] key_idx = {row-finding_idx, col+finding_idx};
-                                    key_const = appendArr_2d(key_const, key_idx);
+                                    int[] key_idx = new int[2];
+                                    key_idx[0] = row-finding_idx;
+                                    key_idx[1] = col+finding_idx;
+                                    key_const[finding_idx] = key_idx;
+                                    key_comp[key_count]++;
                                     finding_idx++;
                                 }
                                 if (finding_idx == curr_key.length()) {
                                     keys_stat[key_count] = 1;
-                                    print_key_found(puzzle, curr_key, key_const);
+                                    print_key_found(puzzle, curr_key, key_comp[key_count], key_const);
                                     key_const = clearArr_2d(key_const);
                                 } else {
                                     key_const = clearArr_2d(key_const);
@@ -256,13 +267,16 @@ public class Main {
                                 finding_idx = 0;
 
                                 while ((finding_idx < curr_key.length()) && (getCharFromString(curr_key, finding_idx) == puzzle[row][col+finding_idx])) {
-                                    int[] key_idx = {row, col+finding_idx};
-                                    key_const = appendArr_2d(key_const, key_idx);
+                                    int[] key_idx = new int[2];
+                                    key_idx[0] = row;
+                                    key_idx[1] = col+finding_idx;
+                                    key_const[finding_idx] = key_idx;
+                                    key_comp[key_count]++;
                                     finding_idx++;
                                 }
                                 if (finding_idx == curr_key.length()) {
                                     keys_stat[key_count] = 1;
-                                    print_key_found(puzzle, curr_key, key_const);
+                                    print_key_found(puzzle, curr_key, key_comp[key_count], key_const);
                                     key_const = clearArr_2d(key_const);
                                 } else {
                                     key_const = clearArr_2d(key_const);
@@ -280,13 +294,16 @@ public class Main {
                                 finding_idx = 0;
 
                                 while ((finding_idx < curr_key.length()) && (getCharFromString(curr_key, finding_idx) == puzzle[row+finding_idx][col+finding_idx])) {
-                                    int[] key_idx = {row+finding_idx, col+finding_idx};
-                                    key_const = appendArr_2d(key_const, key_idx);
+                                    int[] key_idx = new int[2];
+                                    key_idx[0] = row+finding_idx;
+                                    key_idx[1] = col+finding_idx;
+                                    key_const[finding_idx] = key_idx;
+                                    key_comp[key_count]++;
                                     finding_idx++;
                                 }
                                 if (finding_idx == curr_key.length()) {
                                     keys_stat[key_count] = 1;
-                                    print_key_found(puzzle, curr_key, key_const);
+                                    print_key_found(puzzle, curr_key, key_comp[key_count], key_const);
                                     key_const = clearArr_2d(key_const);
                                 } else {
                                     key_const = clearArr_2d(key_const);
@@ -300,13 +317,16 @@ public class Main {
                                 finding_idx = 0;
 
                                 while ((finding_idx < curr_key.length()) && (getCharFromString(curr_key, finding_idx) == puzzle[row+finding_idx][col])) {
-                                    int[] key_idx = {row+finding_idx, col};
-                                    key_const = appendArr_2d(key_const, key_idx);
+                                    int[] key_idx = new int[2];
+                                    key_idx[0] = row+finding_idx;
+                                    key_idx[1] = col;
+                                    key_const[finding_idx] = key_idx;
+                                    key_comp[key_count]++;
                                     finding_idx++;
                                 }
                                 if (finding_idx == curr_key.length()) {
                                     keys_stat[key_count] = 1;
-                                    print_key_found(puzzle, curr_key, key_const);
+                                    print_key_found(puzzle, curr_key, key_comp[key_count], key_const);
                                     key_const = clearArr_2d(key_const);
                                 } else {
                                     key_const = clearArr_2d(key_const);
@@ -324,13 +344,16 @@ public class Main {
                                 finding_idx = 0;
 
                                 while ((finding_idx < curr_key.length()) && (getCharFromString(curr_key, finding_idx) == puzzle[row+finding_idx][col-finding_idx])) {
-                                    int[] key_idx = {row+finding_idx, col-finding_idx};
-                                    key_const = appendArr_2d(key_const, key_idx);
+                                    int[] key_idx = new int[2];
+                                    key_idx[0] = row+finding_idx;
+                                    key_idx[1] = col-finding_idx;
+                                    key_const[finding_idx] = key_idx;
+                                    key_comp[key_count]++;
                                     finding_idx++;
                                 }
                                 if (finding_idx == curr_key.length()) {
                                     keys_stat[key_count] = 1;
-                                    print_key_found(puzzle, curr_key, key_const);
+                                    print_key_found(puzzle, curr_key, key_comp[key_count], key_const);
                                     key_const = clearArr_2d(key_const);
                                 } else {
                                     key_const = clearArr_2d(key_const);
@@ -344,19 +367,23 @@ public class Main {
                                 finding_idx = 0;
 
                                 while ((finding_idx < curr_key.length()) && (getCharFromString(curr_key, finding_idx) == puzzle[row][col-finding_idx])) {
-                                    int[] key_idx = {row, col-finding_idx};
-                                    key_const = appendArr_2d(key_const, key_idx);
+                                    int[] key_idx = new int[2];
+                                    key_idx[0] = row;
+                                    key_idx[1] = col-finding_idx;
+                                    key_const[finding_idx] = key_idx;
+                                    key_comp[key_count]++;
                                     finding_idx++;
                                 }
                                 if (finding_idx == curr_key.length()) {
                                     keys_stat[key_count] = 1;
-                                    print_key_found(puzzle, curr_key, key_const);
+                                    print_key_found(puzzle, curr_key, key_comp[key_count], key_const);
                                     key_const = clearArr_2d(key_const);
                                 } else {
                                     key_const = clearArr_2d(key_const);
                                 }
                             }
-                        } else {
+                        } 
+                        else if (dir_state == 7) {
                             boundary_length = row + 1;
                             x_boundary = col + 1;
 
@@ -367,13 +394,16 @@ public class Main {
                                 finding_idx = 0;
 
                                 while ((finding_idx < curr_key.length()) && (getCharFromString(curr_key, finding_idx) == puzzle[row-finding_idx][col-finding_idx])) {
-                                    int[] key_idx = {row-finding_idx, col-finding_idx};
-                                    key_const = appendArr_2d(key_const, key_idx);
+                                    int[] key_idx = new int[2];
+                                    key_idx[0] = row-finding_idx;
+                                    key_idx[1] = col-finding_idx;
+                                    key_const[finding_idx] = key_idx;
+                                    key_comp[key_count]++;
                                     finding_idx++;
                                 }
                                 if (finding_idx == curr_key.length()) {
                                     keys_stat[key_count] = 1;
-                                    print_key_found(puzzle, curr_key, key_const);
+                                    print_key_found(puzzle, curr_key, key_comp[key_count], key_const);
                                     key_const = clearArr_2d(key_const);
                                 } else {
                                     key_const = clearArr_2d(key_const);
@@ -395,8 +425,8 @@ public class Main {
 
         // output
         // output_program(puzzle, all_keys_constructors, keys_arr);
-        System.out.println(found);
-        System.out.println("===");
+        System.out.println("=======================");
         System.out.println("Execution time: " + elapsedTime/1000000 + " ms");
+        System.out.println("=======================");
     }
 }
