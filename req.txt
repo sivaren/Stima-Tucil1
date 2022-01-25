@@ -2,3 +2,5 @@ append 1d arr to 2d arr
 append 2d arr to 3d arr
 clear 2d arr
 compare an arr
+===
+input file txt
