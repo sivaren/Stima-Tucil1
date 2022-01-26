@@ -31,8 +31,8 @@ $ git clone https://github.com/sivaren/Stima-Tucil1.git
 
 **Open `cmd` on this folder**
 ```
-    javac src/Main.java -d bin
-    java src/Main.java
+  javac src/Main.java -d bin
+  java src/Main.java
 ```
 
 ## Project Status
