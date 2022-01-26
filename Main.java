@@ -119,26 +119,8 @@ public class Main {
         return true;
     }
 
-    // Method untuk menampilkan keywords yang ditemukan, beserta posisinya pada puzzle
-    public static void output_program(char[][] puzzle, int[][][] all_keys_constructors, String[] keys_arr){
-        for(int i=0; i < keys_arr.length; i++){
-            System.out.println(keys_arr[i]);
-
-            for(int row=0; row < puzzle.length; row++) {
-                for(int col=0; col < puzzle[0].length; col++){
-                    if (isRowCol_avail(row, col, all_keys_constructors[i])) {
-                        System.out.print(puzzle[row][col]);
-                        System.out.print(" ");
-                    } else {
-                        System.out.print("-");
-                        System.out.print(" ");
-                    }
-                }
-                System.out.println();
-            }
-        }
-    }
-
+    // Method untuk menampilkan keywords yang ditemukan,
+    // posisinya pada puzzle, serta jumlah perbandingan huruf yang dilakukan
     public static void print_key_found(char[][] puzzle, String key_word, int key_comp, int[][] key_const) {
         System.out.println(key_word);
         for (int i = 0; i < puzzle.length; i++) {
@@ -170,21 +152,6 @@ public class Main {
         String[] keys_arr = readKeywords("test/" + inputFile);
         int[] keys_stat = new int[keys_arr.length];
         int[] key_comp = new int[keys_arr.length];
-
-        // int[][][] all_keys_constructors = {};
-
-        // for(int i = 0; i < puzzle.length; i++) {
-        //     for(int j = 0; j < puzzle[0].length; j++) { 
-        //         System.out.print(puzzle[i][j]);
-        //     }
-        //     System.out.println();
-        // }
-        
-        // // System.out.println("===");
-
-        // for(int i = 0; i < keys_arr.length; i++) {
-        //     System.out.println(keys_arr[i]);
-        // }
 
         boolean found = false;
         int key_count = 0;
@@ -424,7 +391,6 @@ public class Main {
         long elapsedTime = System.nanoTime() - startTime;
 
         // output
-        // output_program(puzzle, all_keys_constructors, keys_arr);
         System.out.println("=======================");
         System.out.println("Execution time: " + elapsedTime/1000000 + " ms");
         System.out.println("=======================");
