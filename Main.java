@@ -390,7 +390,12 @@ public class Main {
         }
         long elapsedTime = System.nanoTime() - startTime;
 
+        for (int i = 0; i < keys_stat.length; i++){
+            System.out.print(keys_stat[i]);
+        }
         // output
+        System.out.println();
+        System.out.println(found);
         System.out.println("=======================");
         System.out.println("Execution time: " + elapsedTime/1000000 + " ms");
         System.out.println("=======================");
