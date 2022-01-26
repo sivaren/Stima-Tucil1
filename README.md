@@ -15,7 +15,7 @@ Penyelesaian Word Search Puzzle dengan Algoritma Brute Force
 * [Project Status](#project-status)
 * [Author](#author)
 
-## Prerequisites
+## General Information
 > Program sederhana dalam Bahasa Java yang mengimplementasikan algoritma Brute Force untuk mencari solusi word search puzzle
 
 ## Prerequisites
